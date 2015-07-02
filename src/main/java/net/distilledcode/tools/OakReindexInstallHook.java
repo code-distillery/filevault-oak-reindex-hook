@@ -34,19 +34,20 @@ public class OakReindexInstallHook implements InstallHook {
 
     private static final Logger LOG = LoggerFactory.getLogger(OakReindexInstallHook.class);
 
-    private PropertyTrackingListener propertyTrackingListener = new PropertyTrackingListener();
-    private IndexChangeListener indexChangeListener = new IndexChangeListener();
+    private final PropertyTrackingListener propertyTrackingListener = new PropertyTrackingListener();
 
     @Override
     public void execute(InstallContext context) throws PackageException {
         try {
             switch(context.getPhase()) {
                 case PREPARE:
-                    recordAndRemoveReindexProperties(context);
-                    registerChangeListener(context);
+                    final IndexChangeListener indexChangeListener = new IndexChangeListener(context.getSession(), propertyTrackingListener);
+
+                    recordAndRemoveReindexProperties(context, propertyTrackingListener);
+                    registerChangeListener(context, indexChangeListener);
                     break;
-                case INSTALLED:
-                    restoreReindexProperties(context);
+                case END:
+                    propertyTrackingListener.restoreUnchangedProperties(context.getSession());
                     break;
             }
         } catch (RepositoryException e) {
@@ -54,7 +55,7 @@ public class OakReindexInstallHook implements InstallHook {
         }
     }
 
-    private void recordAndRemoveReindexProperties(InstallContext context) throws RepositoryException {
+    private void recordAndRemoveReindexProperties(InstallContext context, final PropertyTrackingListener propertyTrackingListener) throws RepositoryException {
         final Session session = context.getSession();
         final Node indexes = session.getNode("/oak:index");
 
@@ -63,13 +64,8 @@ public class OakReindexInstallHook implements InstallHook {
         propertyTrackingListener.removeAndRecordReindexProps(session);
     }
 
-    private void registerChangeListener(InstallContext context) {
+    private void registerChangeListener(InstallContext context, final IndexChangeListener indexChangeListener) {
         final ImportOptions options = context.getOptions();
         options.setListener(CompoundProgressTrackerListener.create(options.getListener(), indexChangeListener));
-    }
-
-    private void restoreReindexProperties(InstallContext context) throws RepositoryException {
-        final Session session = context.getSession();
-        propertyTrackingListener.restoreReindexProps(session, indexChangeListener.getPathsToReindex());
     }
 }

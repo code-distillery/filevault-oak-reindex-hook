@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.jcr.Node;
+import javax.jcr.PathNotFoundException;
 import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
@@ -35,11 +36,22 @@ class PropertyTrackingListener implements ProgressTrackerListener {
         // no save needed, because the package installation will work with the same session
     }
 
-    public void restoreReindexProps(Session session, List<String> reindexPaths) throws RepositoryException {
+    public void restoreUnchangedProperties(Session session, String path) throws RepositoryException {
+        if (indexDefinitions.containsKey(path)) {
+            final ReindexRecord record = indexDefinitions.remove(path);
+            final Node definition = session.getNode(path);
+            definition.setProperty("reindex", true);
+            if (record.reindexCount != -1) {
+                definition.setProperty("reindexCount", record.reindexCount);
+            }
+        }
+    }
+
+    public void restoreUnchangedProperties(Session session) throws RepositoryException {
         for (final String path : indexDefinitions.keySet()) {
             final ReindexRecord record = indexDefinitions.get(path);
             final Node definition = session.getNode(path);
-            definition.setProperty("reindex", record.reindex || reindexPaths.contains(path));
+            definition.setProperty("reindex", record.reindex);
             if (record.reindexCount != -1) {
                 definition.setProperty("reindexCount", record.reindexCount);
             }
@@ -49,6 +61,7 @@ class PropertyTrackingListener implements ProgressTrackerListener {
 
     @Override
     public void onMessage(Mode mode, String action, String path) {
+        LOG.info("Mode: {}, action: {}, path: {}", mode, action, path);
         if (path.startsWith("/oak:index") && path.lastIndexOf("/") == "/oak:index".length()) {
             LOG.info("Recorded {}", path);
             indexDefinitions.put(path, new ReindexRecord());

@@ -4,7 +4,8 @@ import org.apache.jackrabbit.vault.fs.api.ProgressTrackerListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
+import javax.jcr.RepositoryException;
+import javax.jcr.Session;
 import java.util.List;
 
 import static java.util.Arrays.asList;
@@ -15,25 +16,29 @@ class IndexChangeListener implements ProgressTrackerListener {
 
     private static final List<String> ACTIONS = asList("U");
 
-    private final List<String> reindexPaths = new ArrayList<String>();
+    private Session session;
+    private PropertyTrackingListener propertyTrackingListener;
+
+    public IndexChangeListener(final Session session, final PropertyTrackingListener propertyTrackingListener) {
+        this.session = session;
+        this.propertyTrackingListener = propertyTrackingListener;
+    }
 
     @Override
     public void onMessage(Mode mode, String action, String path) {
         LOG.info("Mode: {}, action: {}, path: {}", mode, action, path);
         if (ACTIONS.contains(action) && path.contains("/oak:index/")) {
             // TODO: get index definition path
-            reindexPaths.add(path);
-
-            // restore properties directly here?
+            try {
+                propertyTrackingListener.restoreUnchangedProperties(session, path);
+            } catch (RepositoryException e) {
+                LOG.error("Failed to restore properties", e);
+            }
         }
     }
 
     @Override
     public void onError(Mode mode, String path, Exception e) {
         LOG.error("Mode: {}, path: {}", mode, path, e);
-    }
-
-    public List<String> getPathsToReindex() {
-        return reindexPaths;
     }
 }
