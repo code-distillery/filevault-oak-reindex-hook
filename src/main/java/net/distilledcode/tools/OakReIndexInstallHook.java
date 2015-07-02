@@ -13,9 +13,9 @@ import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
-public class OakReIndexHook implements InstallHook {
+public class OakReIndexInstallHook implements InstallHook {
 
-    private static final Logger LOG = LoggerFactory.getLogger(OakReIndexHook.class);
+    private static final Logger LOG = LoggerFactory.getLogger(OakReIndexInstallHook.class);
 
     private PropertyTrackingListener propertyTrackingListener = new PropertyTrackingListener();
     private IndexChangeListener indexChangeListener = new IndexChangeListener();
