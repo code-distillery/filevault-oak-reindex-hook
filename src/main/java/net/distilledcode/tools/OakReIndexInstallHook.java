@@ -51,7 +51,7 @@ public class OakReIndexInstallHook implements InstallHook {
         final ProgressTrackerListener listener = options.getListener();
 
         if (listener != null) {
-            options.setListener(new CompoundListener(listener, indexChangeListener));
+            options.setListener(new CompoundProgressTrackerListener(listener, indexChangeListener));
             LOG.info("Registered compound listener");
         } else {
             options.setListener(indexChangeListener);

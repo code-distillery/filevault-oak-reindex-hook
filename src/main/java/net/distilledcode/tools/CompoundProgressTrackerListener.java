@@ -1,18 +1,16 @@
 package net.distilledcode.tools;
 
 import org.apache.jackrabbit.vault.fs.api.ProgressTrackerListener;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
 import static java.util.Arrays.asList;
 
-class CompoundListener implements ProgressTrackerListener {
+class CompoundProgressTrackerListener implements ProgressTrackerListener {
 
     private List<ProgressTrackerListener> listeners;
 
-    public CompoundListener(ProgressTrackerListener... listeners) {
+    public CompoundProgressTrackerListener(ProgressTrackerListener... listeners) {
         this.listeners = asList(listeners);
     }
 
