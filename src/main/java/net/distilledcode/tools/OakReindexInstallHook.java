@@ -1,6 +1,5 @@
 package net.distilledcode.tools;
 
-import org.apache.jackrabbit.vault.fs.api.ProgressTrackerListener;
 import org.apache.jackrabbit.vault.fs.api.WorkspaceFilter;
 import org.apache.jackrabbit.vault.fs.io.ImportOptions;
 import org.apache.jackrabbit.vault.packaging.InstallContext;
@@ -49,7 +48,7 @@ public class OakReindexInstallHook implements InstallHook {
                 case INSTALLED:
                     restoreReindexProperties(context);
                     break;
-        }
+            }
         } catch (RepositoryException e) {
             throw new PackageException(e);
         }
@@ -66,15 +65,7 @@ public class OakReindexInstallHook implements InstallHook {
 
     private void registerChangeListener(InstallContext context) {
         final ImportOptions options = context.getOptions();
-        final ProgressTrackerListener listener = options.getListener();
-
-        if (listener != null) {
-            options.setListener(new CompoundProgressTrackerListener(listener, indexChangeListener));
-            LOG.info("Registered compound listener");
-        } else {
-            options.setListener(indexChangeListener);
-            LOG.info("Registered simple listener");
-        }
+        options.setListener(CompoundProgressTrackerListener.create(options.getListener(), indexChangeListener));
     }
 
     private void restoreReindexProperties(InstallContext context) throws RepositoryException {
