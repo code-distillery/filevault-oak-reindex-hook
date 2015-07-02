@@ -61,6 +61,6 @@ public class OakReIndexInstallHook implements InstallHook {
 
     private void restoreReindexProperties(InstallContext context) throws RepositoryException {
         final Session session = context.getSession();
-        propertyTrackingListener.restoreReindexProps(session, indexChangeListener.getReindexPaths());
+        propertyTrackingListener.restoreReindexProps(session, indexChangeListener.getPathsToReindex());
     }
 }

@@ -21,7 +21,10 @@ class IndexChangeListener implements ProgressTrackerListener {
     public void onMessage(Mode mode, String action, String path) {
         LOG.info("Mode: {}, action: {}, path: {}", mode, action, path);
         if (ACTIONS.contains(action) && path.contains("/oak:index/")) {
+            // TODO: get index definition path
             reindexPaths.add(path);
+
+            // restore properties directly here?
         }
     }
 
@@ -30,7 +33,7 @@ class IndexChangeListener implements ProgressTrackerListener {
         LOG.error("Mode: {}, path: {}", mode, path, e);
     }
 
-    public List<String> getReindexPaths() {
+    public List<String> getPathsToReindex() {
         return reindexPaths;
     }
 }
