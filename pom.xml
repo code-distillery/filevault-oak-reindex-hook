@@ -45,7 +45,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>net.distilledcode.tools.OakReIndexInstallHook</mainClass>
+                            <mainClass>net.distilledcode.tools.OakReindexInstallHook</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
