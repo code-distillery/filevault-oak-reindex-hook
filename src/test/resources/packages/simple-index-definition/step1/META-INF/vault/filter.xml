@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<workspaceFilter version="1.0">
-    <filter mode="merge" root="/oak:index/jcrMimeType">
-        <exclude pattern=".*reindex$"/>
-        <exclude pattern=".*reindexCount$"/>
-    </filter>
-</workspaceFilter>

@@ -38,11 +38,11 @@ public class OakReindexInstallHook implements InstallHook {
 
     @Override
     public void execute(InstallContext context) throws PackageException {
+        LOG.info("enter execute in phase {}", context.getPhase());
         try {
             switch(context.getPhase()) {
                 case PREPARE:
                     final IndexChangeListener indexChangeListener = new IndexChangeListener(context.getSession(), propertyTrackingListener);
-
                     recordAndRemoveReindexProperties(context, propertyTrackingListener);
                     registerChangeListener(context, indexChangeListener);
                     break;
@@ -52,13 +52,14 @@ public class OakReindexInstallHook implements InstallHook {
             }
         } catch (RepositoryException e) {
             throw new PackageException(e);
+        } finally {
+            LOG.info("exit execute in phase {}", context.getPhase());
         }
     }
 
     private void recordAndRemoveReindexProperties(InstallContext context, final PropertyTrackingListener propertyTrackingListener) throws RepositoryException {
         final Session session = context.getSession();
         final Node indexes = session.getNode("/oak:index");
-
         final WorkspaceFilter filter = context.getPackage().getArchive().getMetaInf().getFilter();
         filter.dumpCoverage(indexes, propertyTrackingListener);
         propertyTrackingListener.removeAndRecordReindexProps(session);

@@ -14,7 +14,7 @@ class IndexChangeListener implements ProgressTrackerListener {
 
     private static final Logger LOG = LoggerFactory.getLogger(IndexChangeListener.class);
 
-    private static final List<String> ACTIONS = asList("U");
+    private static final List<String> ACTIONS = asList("U", "A");
 
     private Session session;
     private PropertyTrackingListener propertyTrackingListener;
@@ -26,15 +26,23 @@ class IndexChangeListener implements ProgressTrackerListener {
 
     @Override
     public void onMessage(Mode mode, String action, String path) {
-        LOG.info("Mode: {}, action: {}, path: {}", mode, action, path);
         if (ACTIONS.contains(action) && path.contains("/oak:index/")) {
             // TODO: get index definition path
+            final String definitionPath = getIndexDefinitionPath(path);
             try {
-                propertyTrackingListener.restoreUnchangedProperties(session, path);
+                propertyTrackingListener.restoreUnchangedProperties(session, definitionPath);
             } catch (RepositoryException e) {
                 LOG.error("Failed to restore properties", e);
             }
         }
+    }
+
+    private String getIndexDefinitionPath(final String path) {
+        final String[] parts = path.split("/oak:index/");
+        if (parts.length == 2 && parts[1].contains("/")) {
+            return parts[0] + "/oak:index/" + parts[1].substring(0, parts[1].indexOf("/"));
+        }
+        return path;
     }
 
     @Override

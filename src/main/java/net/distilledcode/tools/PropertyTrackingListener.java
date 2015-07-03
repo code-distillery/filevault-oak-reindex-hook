@@ -44,6 +44,7 @@ class PropertyTrackingListener implements ProgressTrackerListener {
             if (record.reindexCount != -1) {
                 definition.setProperty("reindexCount", record.reindexCount);
             }
+            LOG.info("Change in index definition {} detected, will be re-indexed.", path);
         }
     }
 
@@ -55,16 +56,19 @@ class PropertyTrackingListener implements ProgressTrackerListener {
             if (record.reindexCount != -1) {
                 definition.setProperty("reindexCount", record.reindexCount);
             }
+            LOG.info("Restored unchanged index properties for {}", path);
         }
         session.save();
     }
 
     @Override
     public void onMessage(Mode mode, String action, String path) {
-        LOG.info("Mode: {}, action: {}, path: {}", mode, action, path);
-        if (path.startsWith("/oak:index") && path.lastIndexOf("/") == "/oak:index".length()) {
-            LOG.info("Recorded {}", path);
-            indexDefinitions.put(path, new ReindexRecord());
+        if (path.contains("/oak:index/")) {
+            final String[] parts = path.split("/oak:index/");
+            if (parts.length == 2 && !parts[1].contains("/")) {
+                LOG.info("Found index definition {} in package.", path);
+                indexDefinitions.put(path, new ReindexRecord());
+            }
         }
     }
 

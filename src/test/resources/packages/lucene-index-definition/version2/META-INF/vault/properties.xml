@@ -2,6 +2,7 @@
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 <properties>
 <comment>FileVault Package Properties</comment>
-<entry key="name">jcrMimeType</entry>
+<entry key="name">ntFile</entry>
 <entry key="group">index</entry>
+<entry key="version">2.0</entry>
 </properties>
