@@ -5,7 +5,15 @@ import org.apache.jackrabbit.vault.fs.api.ProgressTrackerListener;
 import java.util.ArrayList;
 import java.util.List;
 
-class CompoundProgressTrackerListener implements ProgressTrackerListener {
+/**
+ * A ProgressTrackerListener implementation that delegates to a list of
+ * listeners. Delegation happens in the order the arguments are provided.
+ * <br>
+ * If a {@code CompoundProgressTrackerListener} instance is among the
+ * delegates, its internal list of listeners is added directly to the new
+ * instance.
+ */
+public class CompoundProgressTrackerListener implements ProgressTrackerListener {
 
     private List<ProgressTrackerListener> listeners;
 
