@@ -20,16 +20,16 @@ import java.util.Set;
 /**
  * The OakReindexInstallHook automatically triggers a re-index of
  * Oak indexes if their definitions are modified.
- * <br/>
+ * <br>
  * The hook works by searching any contained index definitions
  * in the prepare phase. It then (transiently) removes and records
  * the {@code reindex} and {@code reindexCount} properties of the
  * definition nodes. This step is necessary to avoid false positives
  * for definition changes.
- * <br/>
+ * <br>
  * Next any changes on index definitions during package installation
  * are tracked.
- * <br/>
+ * <br>
  * Finally the previously recorded properties are restored, with the
  * exception of modified index definitions. For them, only the
  * {@code reindexCount} property is restored and the {@code reindex}
