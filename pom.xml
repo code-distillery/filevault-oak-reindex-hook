@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>net.distilledcode</groupId>
-    <artifactId>oak-reindex-hook</artifactId>
+    <artifactId>filevault-oak-reindex-hook</artifactId>
     <packaging>jar</packaging>
     <version>0.0.1-SNAPSHOT</version>
 
