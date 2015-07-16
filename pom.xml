@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>net.distilledcode</groupId>
     <artifactId>filevault-oak-reindex-hook</artifactId>
     <packaging>jar</packaging>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.0.0</version>
 
     <name>Code Distillery ~ FileVault Oak Re-Index Hook</name>
     <description>
@@ -29,7 +28,7 @@
         <connection>scm:git:git@github.com:code-distillery/filevault-oak-reindex-hook.git</connection>
         <developerConnection>scm:git:git@github.com:code-distillery/filevault-oak-reindex-hook.git</developerConnection>
         <url>https://github.com/code-distillery/filevault-oak-reindex-hook</url>
-        <tag>HEAD</tag>
+        <tag>v1.0.0</tag>
     </scm>
 
     <inceptionYear>2015</inceptionYear>
