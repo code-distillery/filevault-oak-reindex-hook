@@ -50,19 +50,22 @@ public class OakReindexInstallHook implements InstallHook {
     @Override
     public void execute(InstallContext context) throws PackageException {
         try {
+            final Session session = context.getSession();
             switch (context.getPhase()) {
                 case PREPARE:
                     final Set<String> definitionPaths = collectIndexDefinitionPaths(context);
-                    reindexRecords = removeReindexProperties(context.getSession(), definitionPaths);
+                    reindexRecords = removeReindexProperties(session, definitionPaths);
                     registerChangeListener(context, modificationCollector);
                     break;
                 case INSTALLED:
                     reindexRecords = handleChangedIndexDefinitions(
-                            context.getSession(), reindexRecords, modificationCollector.getIndexDefinitionPaths());
+                            session, reindexRecords, modificationCollector.getIndexDefinitionPaths());
                 case END:
-                    final Session session = context.getSession();
                     restoreUnchangedProperties(session, reindexRecords);
-                    session.save();
+                    reindexRecords.clear();
+                    if (session.hasPendingChanges()) {
+                        session.save();
+                    }
                     break;
             }
         } catch (RepositoryException e) {
