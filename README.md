@@ -6,4 +6,17 @@ that contain index definitions.
 It helps to trigger a reindex when necessary but not otherwise, when
 a package containing Oak index definitions is installed.
 
+#Usage
 
+To use this index hook:
+
+* create a content package with index definitions (e.g. below /oak:index)
+* include the hook jar file in `META-INF/vault/hooks`
+* install the content-package
+ 
+The hook manages the properties `reindex` and `reindexCount` on an index
+definition. So it makes sense to avoid using these two properties in the
+content package.
+
+Reindexing is triggered if an index definition has changed. I.e. if the
+definition node or any of its descendants was added, modified or deleted.
