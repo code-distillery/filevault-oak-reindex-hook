@@ -2,7 +2,6 @@ package net.distilledcode.tools;
 
 import org.apache.jackrabbit.oak.jcr.Jcr;
 import org.apache.jackrabbit.oak.plugins.index.lucene.LuceneIndexEditorProvider;
-import org.apache.jackrabbit.oak.spi.security.OpenSecurityProvider;
 import org.apache.jackrabbit.vault.packaging.PackageException;
 import org.junit.Before;
 import org.junit.Test;
@@ -37,7 +36,7 @@ public class IndexChangeHandlerTest {
     public void reindexModifiedIndex() throws PackageException, IOException, RepositoryException {
         // install package version 1
         installWithHook(admin, "property-index-definition/version1", new OakReindexInstallHook());
-        assertTrue(admin.getRootNode().hasNode("oak:index/jcrMimeType"));
+        assertExists(admin, "/oak:index/jcrMimeType");
         final Node definition = admin.getNode("/oak:index/jcrMimeType");
         assertFalse(definition.getProperty(PN_REINDEX).getBoolean());
         assertEquals(1, definition.getProperty(PN_REINDEX_COUNT).getLong());
@@ -52,7 +51,7 @@ public class IndexChangeHandlerTest {
     public void noReindexWhenNothingChanged() throws PackageException, IOException, RepositoryException {
         // install package version 1
         installWithHook(admin, "property-index-definition/version1", new OakReindexInstallHook());
-        assertTrue(admin.getRootNode().hasNode("oak:index/jcrMimeType"));
+        assertExists(admin, "/oak:index/jcrMimeType");
         final Node definition = admin.getNode("/oak:index/jcrMimeType");
         assertFalse(definition.getProperty(PN_REINDEX).getBoolean());
         assertEquals(1, definition.getProperty(PN_REINDEX_COUNT).getLong());
@@ -67,7 +66,7 @@ public class IndexChangeHandlerTest {
     public void reindexModifiedDeepIndexDefinition() throws PackageException, IOException, RepositoryException {
         // install package version 1
         installWithHook(admin, "lucene-index-definition/version1", new OakReindexInstallHook());
-        assertTrue(admin.getRootNode().hasNode("oak:index/ntFile"));
+        assertExists(admin, "/oak:index/ntFile");
         final Node definition = admin.getNode("/oak:index/ntFile");
         assertFalse("reindex != false", definition.getProperty(PN_REINDEX).getBoolean());
         assertEquals(1, definition.getProperty(PN_REINDEX_COUNT).getLong());
@@ -82,7 +81,7 @@ public class IndexChangeHandlerTest {
     public void reindexWhenDefinitionChildDeleted() throws PackageException, IOException, RepositoryException {
         // install package version 2
         installWithHook(admin, "lucene-index-definition/version2", new OakReindexInstallHook());
-        assertTrue(admin.getRootNode().hasNode("oak:index/ntFile"));
+        assertExists(admin, "/oak:index/ntFile");
         final Node definition = admin.getNode("/oak:index/ntFile");
         assertFalse("reindex != false", definition.getProperty(PN_REINDEX).getBoolean());
         assertEquals(1, definition.getProperty(PN_REINDEX_COUNT).getLong());
@@ -97,7 +96,7 @@ public class IndexChangeHandlerTest {
     public void noReindexWhenNothingChangedInDeepIndexDefinition() throws PackageException, IOException, RepositoryException {
         // install package version 1
         installWithHook(admin, "lucene-index-definition/version1", new OakReindexInstallHook());
-        assertTrue(admin.getRootNode().hasNode("oak:index/ntFile"));
+        assertExists(admin, "/oak:index/ntFile");
         final Node definition = admin.getNode("/oak:index/ntFile");
         assertFalse("reindex != false", definition.getProperty(PN_REINDEX).getBoolean());
         assertEquals(1, definition.getProperty(PN_REINDEX_COUNT).getLong());
@@ -106,5 +105,10 @@ public class IndexChangeHandlerTest {
         installWithHook(admin, "lucene-index-definition/version1", new OakReindexInstallHook());
         assertFalse(definition.getProperty(PN_REINDEX).getBoolean());
         assertEquals(1, definition.getProperty(PN_REINDEX_COUNT).getLong());
+    }
+
+    private void assertExists(final Session session, final String path) throws RepositoryException {
+        final String relPath = path.substring(1);
+        assertTrue(path + " does not exist", session.getRootNode().hasNode(relPath));
     }
 }
