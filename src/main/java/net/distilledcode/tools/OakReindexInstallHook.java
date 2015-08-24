@@ -58,8 +58,9 @@ public class OakReindexInstallHook implements InstallHook {
                     registerChangeListener(context, modificationCollector);
                     break;
                 case INSTALLED:
+                    final Set<String> modifiedIndexDefinitions = modificationCollector.getIndexDefinitionPaths();
                     reindexRecords = handleChangedIndexDefinitions(
-                            session, reindexRecords, modificationCollector.getIndexDefinitionPaths());
+                            session, reindexRecords, modifiedIndexDefinitions);
                 case END:
                     restoreUnchangedProperties(session, reindexRecords);
                     reindexRecords.clear();
@@ -107,10 +108,13 @@ public class OakReindexInstallHook implements InstallHook {
     private static void restoreIndexingProperties(final Session session, final String path, final ReindexRecord record)
             throws RepositoryException {
 
-        final Node definition = session.getNode(path);
-        definition.setProperty(PN_REINDEX, record.reindex);
-        if (record.reindexCount != -1) {
-            definition.setProperty(PN_REINDEX_COUNT, record.reindexCount);
+        final String relPath = path.substring(1);
+        if (session.getRootNode().hasNode(relPath)) {
+            final Node definition = session.getNode(path);
+            definition.setProperty(PN_REINDEX, record.reindex);
+            if (record.reindexCount != -1) {
+                definition.setProperty(PN_REINDEX_COUNT, record.reindexCount);
+            }
         }
     }
 

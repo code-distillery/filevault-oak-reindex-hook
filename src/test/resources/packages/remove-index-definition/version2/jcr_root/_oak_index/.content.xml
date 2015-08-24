@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jcr:root xmlns:oak="http://jackrabbit.apache.org/oak/ns/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0"
+    jcr:primaryType="nt:unstructured">
+    <ntFile-lucene
+        jcr:primaryType="oak:QueryIndexDefinition"
+        name="ntFile"
+        type="lucene">
+        <indexRules jcr:primaryType="nt:unstructured">
+            <nt:base jcr:primaryType="nt:unstructured">
+                <properties jcr:primaryType="nt:unstructured">
+                    <jcrMimeType
+                        jcr:primaryType="nt:unstructured"
+                        name="jcr:mimeType"
+                        propertyIndex="{Boolean}true"/>
+                </properties>
+            </nt:base>
+        </indexRules>
+    </ntFile-lucene>
+</jcr:root>

@@ -107,8 +107,38 @@ public class IndexChangeHandlerTest {
         assertEquals(1, definition.getProperty(PN_REINDEX_COUNT).getLong());
     }
 
+    @Test
+    public void handleDeletedIndexDefinitionsGracefully() throws PackageException, IOException, RepositoryException {
+        // install package version 1
+        installWithHook(admin, "remove-index-definition/version1", new OakReindexInstallHook());
+        assertExists(admin, "/oak:index/ntFile-lucene");
+        assertExists(admin, "/oak:index/ntFile-property");
+        final Node definition = admin.getNode("/oak:index/ntFile-lucene");
+        assertFalse("reindex != false", definition.getProperty(PN_REINDEX).getBoolean());
+        assertEquals(1, definition.getProperty(PN_REINDEX_COUNT).getLong());
+
+        // install package version 2 (remove jcrMimeType definition)
+        installWithHook(admin, "remove-index-definition/version2", new OakReindexInstallHook());
+        assertExists(admin, "/oak:index/ntFile-lucene");
+        assertMissing(admin, "/oak:index/ntFile-property");
+        assertFalse("reindex != false", definition.getProperty(PN_REINDEX).getBoolean());
+        assertEquals(1, definition.getProperty(PN_REINDEX_COUNT).getLong());
+
+        // install package version 1 again (re-add jcrMimeType index definition)
+        installWithHook(admin, "remove-index-definition/version1", new OakReindexInstallHook());
+        assertExists(admin, "/oak:index/ntFile-lucene");
+        assertExists(admin, "/oak:index/ntFile-property");
+        assertFalse("reindex != false", definition.getProperty(PN_REINDEX).getBoolean());
+        assertEquals(1, definition.getProperty(PN_REINDEX_COUNT).getLong());
+    }
+
     private void assertExists(final Session session, final String path) throws RepositoryException {
         final String relPath = path.substring(1);
         assertTrue(path + " does not exist", session.getRootNode().hasNode(relPath));
+    }
+
+    private void assertMissing(final Session session, final String path) throws RepositoryException {
+        final String relPath = path.substring(1);
+        assertFalse(path + " exist", session.getRootNode().hasNode(relPath));
     }
 }
