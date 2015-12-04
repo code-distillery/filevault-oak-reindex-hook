@@ -20,3 +20,13 @@ content package.
 
 Reindexing is triggered if an index definition has changed. I.e. if the
 definition node or any of its descendants was added, modified or deleted.
+
+# Maven Coordinates
+
+    <dependency>
+        <groupId>net.distilledcode</groupId>
+        <artifactId>filevault-oak-reindex-hook</artifactId>
+        <version><!-- latest version --></version>
+    </dependency>
+
+To find the latest version available, please look on [Maven Central](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22net.distilledcode%22%20AND%20a%3A%22filevault-oak-reindex-hook%22).
